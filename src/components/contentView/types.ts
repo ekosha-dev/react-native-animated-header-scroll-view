@@ -1,8 +1,12 @@
-import { Animated, ViewProps } from 'react-native'
+import { ReactNode } from 'react'
+import { Animated, LayoutChangeEvent } from 'react-native'
 
-export interface ContentViewProps extends ViewProps {
+export interface ContentViewProps {
+  scrollY: Animated.Value
   contentHeight: number
   headerHeight: number
-  scrollY: Animated.Value
   scaleMin?: number
+  fitContentWidth?: boolean
+  children?: ReactNode
+  onLayout?: (event: LayoutChangeEvent) => void
 }

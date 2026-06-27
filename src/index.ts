@@ -1,1 +1,2 @@
-export { AnimatedScrollView } from './components'
+export { AnimatedHeaderScrollView } from './components'
+export type { AnimatedHeaderScrollViewProps } from './components'

@@ -1,1 +1,1 @@
-export { default as useAnimated } from './useAnimated'
+export { default as useHeaderAnimation } from './useHeaderAnimation'

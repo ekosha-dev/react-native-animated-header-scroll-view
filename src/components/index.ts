@@ -1,1 +1,2 @@
-export { default as AnimatedScrollView } from './animatedScrollView'
+export { default as AnimatedHeaderScrollView } from './animatedHeaderScrollView'
+export type { AnimatedHeaderScrollViewProps } from './animatedHeaderScrollView'

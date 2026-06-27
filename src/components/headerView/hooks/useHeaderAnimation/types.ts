@@ -1,8 +1,7 @@
 import { Animated } from 'react-native'
 
-export type UseAnimatedProps = {
+export interface UseHeaderAnimationParams {
+  scrollY: Animated.Value
   contentHeight: number
   headerHeight: number
-  scrollY: Animated.Value
-  scaleMin?: number
 }

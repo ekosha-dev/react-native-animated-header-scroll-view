@@ -1,9 +1,0 @@
-export const SCROLL_PULL_DISTANCE = -200 // Maximum pull-down distance
-export const SCALE_MAX = 1.3 // Maximum zoom when pulling down
-export const SCALE_MIN = 0.7 // Minimum zoom when scrolling up
-export const TRANSLATE_Y_PULL = 10 // Translation on Y-axis when pulling down
-export const TRANSLATE_Y_SCROLL = -30 // Translation on Y-axis when scrolling up
-export const SCALE_DEFAULT = 1 // Default scale when scroll is at 0
-export const TRANSLATE_Y_DEFAULT = 0 // Default translation on Y-axis when scroll is at 0
-export const SCROLL_START = 0 // Starting scroll value
-export const SCROLL_END = 1 // Ending scroll value for normalization

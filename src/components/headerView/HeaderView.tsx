@@ -1,38 +1,47 @@
-import { Animated, View } from 'react-native'
-import { getDynamicStyles, styles } from './styles'
+import { Animated } from 'react-native'
+import { styles } from './styles'
 import { HeaderViewProps } from './types'
-import { useAnimated } from './hooks'
-import { useOptionalSafeAreaInsets } from '../../hooks'
+import { useHeaderAnimation } from './hooks'
+import SafeAreaTop from '../safeAreaTop'
 
 const HeaderView = ({
   topHeaderComponent,
   scrolledHeaderComponent,
-  isScrolledToHeaderEnd,
   headerBackgroundColor,
-  useSafeArea = false,
+  useSafeArea,
+  scrollY,
+  contentHeight,
+  headerHeight,
+  isHeaderCollapsed,
   onHeaderLayout,
 }: HeaderViewProps) => {
-  const { top } = useOptionalSafeAreaInsets(useSafeArea)
-
-  const { opacityTopHeader, opacityScrolledHeader } = useAnimated({ isScrolledToHeaderEnd })
-
-  const dynamicStyles = getDynamicStyles({
-    top,
-    opacityTopHeader,
-    opacityScrolledHeader,
-    headerBackgroundColor,
+  const { topHeaderOpacity, scrolledHeaderOpacity } = useHeaderAnimation({
+    scrollY,
+    contentHeight,
+    headerHeight,
   })
 
   return (
     <>
-      {Boolean(topHeaderComponent) && (
-        <Animated.View style={[styles.topHeaderView, dynamicStyles.topHeaderView]} onLayout={onHeaderLayout}>
-          {topHeaderComponent}
+      {!!topHeaderComponent && (
+        <Animated.View
+          style={[styles.header, { opacity: topHeaderOpacity }]}
+          // Once collapsed, the top header is hidden — let taps fall through to the sticky header.
+          pointerEvents={isHeaderCollapsed ? 'none' : 'auto'}
+          onLayout={onHeaderLayout}
+        >
+          <SafeAreaTop enabled={useSafeArea}>{topHeaderComponent}</SafeAreaTop>
         </Animated.View>
       )}
-      {Boolean(scrolledHeaderComponent) && (
-        <Animated.View style={[styles.scrolledHeaderView, dynamicStyles.scrolledHeaderView]}>
-          <View style={dynamicStyles.scrolledHeaderInsideView}>{scrolledHeaderComponent}</View>
+      {!!scrolledHeaderComponent && (
+        <Animated.View
+          style={[styles.header, { opacity: scrolledHeaderOpacity }]}
+          // The sticky header only receives taps while it is the visible layer.
+          pointerEvents={isHeaderCollapsed ? 'auto' : 'none'}
+        >
+          <SafeAreaTop enabled={useSafeArea} style={{ backgroundColor: headerBackgroundColor }}>
+            {scrolledHeaderComponent}
+          </SafeAreaTop>
         </Animated.View>
       )}
     </>

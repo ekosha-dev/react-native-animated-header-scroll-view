@@ -1,1 +1,0 @@
-export const SCROLL_EVENT_THROTTLE = 16
