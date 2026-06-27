@@ -1,158 +1,81 @@
-# @ekosh02/react-native-animated-header-scroll-view
+# @ekosha-dev/react-native-animated-header-scroll-view
 
-This is a custom React Native component that makes it easy to create animated scroll views with dynamic headers. It provides smooth and responsive animations based on scroll position and extends the standard ScrollView without reanimated reliance.
+A lightweight React Native `ScrollView` with an animated, collapsing header.
+
+As you scroll, the large header content scales and slides away, and a compact sticky header fades in. Everything runs on the **native thread**, so it stays smooth — and there are **no extra dependencies**: no `reanimated`, no `gesture-handler`, no `safe-area-context`.
 
 <p>
-  <img src="https://raw.githubusercontent.com/ekosh02/react-native-animated-header-scroll-view/main/assets/demo-ios.gif" height="500" alt="demo-ios" />
+  <img src="assets/demo.gif" height="500" alt="demo" />
 </p>
-
-&nbsp;&nbsp;&nbsp;
 
 ## Installation
 
-Install using npm:
-
 ```bash
-npm install @ekosh02/react-native-animated-header-scroll-view
+npm install @ekosha-dev/react-native-animated-header-scroll-view
+# or
+yarn add @ekosha-dev/react-native-animated-header-scroll-view
 ```
 
-Or using yarn:
+That's it. Safe-area insets (status bar / notch) are handled for you using built-in APIs — core `SafeAreaView` on iOS and `StatusBar.currentHeight` on Android.
 
-```bash
-yarn add @ekosh02/react-native-animated-header-scroll-view
-```
-
-### Peer dependency:
-
-### This library uses react-native-safe-area-context for handling safe area insets. Make sure it's installed in your project:
-
-Install using npm:
-
-```bash
-npm install react-native-safe-area-context
-```
-
-Or using yarn:
-
-```bash
-yarn add react-native-safe-area-context
-```
-
-&nbsp;&nbsp;&nbsp;
-
-## Features
-
-- Simplifies the creation of animated headers in React Native applications.
-- Smooth scaling and translation animations based on scroll position.
-- Automatically handles header transitions with fade-in and fade-out effects.
-- No react-native-reanimated.
-
-&nbsp;&nbsp;&nbsp;
-
-## Usage Example
-
-Here's an example of how to use `@ekosh02/react-native-animated-header-scroll-view` in a React Native project:
+## Usage
 
 ```tsx
-import { AnimatedScrollView } from '@ekosh02/react-native-animated-header-scroll-view'
+import { AnimatedHeaderScrollView } from '@ekosha-dev/react-native-animated-header-scroll-view'
 import { Text, View } from 'react-native'
 
-const ExampleScreen = () => {
-  return (
-    <AnimatedScrollView
-      topHeaderComponent={
-        <View>
-          <Text>Top Header</Text>
-        </View>
-      }
-      scrolledHeaderComponent={
-        <View>
-          <Text>Scrolled Header</Text>
-        </View>
-      }
-      contentComponent={
-        <View>
-          <Text>Animated Content</Text>
-        </View>
-      }
-      useSafeArea={true}
-    >
-      <View>
-        <Text>Static child content goes here</Text>
-      </View>
-    </AnimatedScrollView>
-  )
-}
-
-export default ExampleScreen
+const Example = () => (
+  <AnimatedHeaderScrollView
+    topHeaderComponent={<Text>Top Header</Text>}
+    scrolledHeaderComponent={<Text>Scrolled Header</Text>}
+    contentComponent={<Text>Animated Content</Text>}
+    useSafeArea
+  >
+    <View>
+      <Text>Static content goes here</Text>
+    </View>
+  </AnimatedHeaderScrollView>
+)
 ```
 
-&nbsp;&nbsp;&nbsp;
+## How it works
 
-## Component Props
+The component is made of four parts. The first two are headers pinned to the top of the screen; the last two scroll normally:
 
-The `AnimatedScrollView` component accepts the following props:
+- **`topHeaderComponent`** — the big header you see at the top. It fades out as you scroll down.
+- **`scrolledHeaderComponent`** — a compact sticky header that fades in once you've scrolled past the content. It stays pinned at the top.
+- **`contentComponent`** — the content right under the header (e.g. a banner image). It scales and slides as you scroll, creating the parallax effect.
+- **`children`** — your regular page content, rendered below and scrolling as usual.
 
-| Prop                      | Type                           | Description                                                                                                                                                                   |
-| ------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `topHeaderComponent`      | `React.ReactNode \| undefined` | Component displayed as the main header before scrolling.                                                                                                                      |
-| `scrolledHeaderComponent` | `React.ReactNode \| undefined` | Component displayed as the header after scrolling past a threshold.                                                                                                           |
-| `contentComponent`        | `React.ReactNode \| undefined` | Content inside the scroll view that will be animated with scaling and translation effects.                                                                                    |
-| `children`                | `React.ReactNode \| undefined` | Regular static content inside the scroll view.                                                                                                                                |
-| `scaleMin`                | `number \| undefined`          | Controls how much the ContentView shrinks during the scroll animation. For example, scaleMin={0.8} means the ContentView shrinks to 80% of its original size while scrolling. |
-| `headerBackgroundColor`   | `ColorValue \| undefined`      | Background color for the `scrolledHeaderComponent`. Useful for matching the background when the header becomes sticky. Example: `"#ffffff"`.                                  |
-| `useSafeArea`             | `boolean \| undefined`         | Enables or disables usage of safe area insets (e.g., for iPhone notch). If true, padding will be added to the top using `useSafeAreaInsets()`. Defaults to `false`.           |
-| `...props`                | `ScrollViewProps \| undefined` | Any additional props passed to the underlying `ScrollView`.                                                                                                                   |
+The switch from the top header to the sticky header happens automatically once `contentComponent` has scrolled out of view.
 
-&nbsp;&nbsp;&nbsp;
+## Props
 
-## Component Behavior
+In addition to every standard [`ScrollView`](https://reactnative.dev/docs/scrollview#props) prop, the component accepts:
 
-The `AnimatedScrollView` component automatically provides smooth transitions and animations for the header and content:
+| Prop                      | Type         | Default | Description                                                                   |
+| ------------------------- | ------------ | ------- | ----------------------------------------------------------------------------- |
+| `topHeaderComponent`      | `ReactNode`  | —       | Large header shown at the top; fades out while scrolling down.                |
+| `scrolledHeaderComponent` | `ReactNode`  | —       | Compact sticky header; fades in after `contentComponent` scrolls out of view. |
+| `contentComponent`        | `ReactNode`  | —       | Content that scales and slides as you scroll (the parallax element).          |
+| `children`                | `ReactNode`  | —       | Regular content rendered below `contentComponent`.                            |
+| `scaleMin`                | `number`     | `0.7`   | How small `contentComponent` shrinks while scrolling up (`0.7` = 70%).        |
+| `fitContentWidth`         | `boolean`    | `true`  | Keep `contentComponent` full-width as it shrinks, so it never leaves gaps.    |
+| `headerBackgroundColor`   | `ColorValue` | —       | Background color of the sticky header (also fills the safe-area inset).       |
+| `useSafeArea`             | `boolean`    | `false` | Add top safe-area padding (status bar / notch) to the headers.                |
 
-| Behavior          | Description                                                                                                          |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Header Transition | Smooth fade transitions between `topHeaderComponent` and `scrolledHeaderComponent`, triggered by scroll position.    |
-| Content Scaling   | The `contentComponent` element scales down and translates upwards when the user scrolls, creating a parallax effect. |
-| Scroll Tracking   | Scroll position is dynamically tracked, triggering appropriate animations and header changes.                        |
+## Full-width content (no gaps)
 
-&nbsp;&nbsp;&nbsp;
+When `contentComponent` shrinks below full size (`scaleMin < 1`), a plain scale would leave empty space on its sides. The library prevents this **automatically** — it widens the content so it still fills the screen at minimum scale. No `Dimensions` math on your side.
 
-## Image Scaling Issue
-
-Using scaleMin = 0.7 in ContentView may cause empty spaces around the image due to reduced width.
-
-<p>
-  <img src="https://raw.githubusercontent.com/ekosh02/react-native-animated-header-scroll-view/main/assets/demo-ios-with-scaling-issue.gif" height="300" alt="demo-ios-with-scaling-issue" />
-</p>
-
-To fix сalculate the initial image width from screen width and scale to avoid gaps:
-
-1. Get the screen width using Dimensions.get("window").width.
-2. Calculate INITIAL_WIDTH by dividing the screen width by SCALE_AT_MIN.
-3. Apply INITIAL_WIDTH to your image or content in ContentView to ensure it scales correctly.
+The only requirement is that your content stretches to fill the width, e.g.:
 
 ```tsx
-import { Dimensions } from 'react-native'
-
-const screenWidth = Dimensions.get('window').width
-const SCALE_AT_MIN = 0.7
-const INITIAL_WIDTH = screenWidth / SCALE_AT_MIN
+contentComponent={<Image source={...} style={{ width: '100%', height: 250 }} />}
 ```
 
-&nbsp;&nbsp;&nbsp;
-
-## Contribution Guidelines
-
-We welcome contributions! Here’s how you can help:
-
-- Report issues or request features by opening an [issue](https://github.com/ekosh02/react-native-animated-header-scroll-view/issues).
-- Submit pull requests to suggest fixes or enhancements.
-
-Before contributing, please ensure your code follows the project's style and passes all tests.
-
-&nbsp;&nbsp;&nbsp;
+To turn this off, pass `fitContentWidth={false}`.
 
 ## License
 
-This project is licensed under the [ISC License](https://github.com/ekosh02/react-native-animated-header-scroll-view/blob/main/LICENSE).
+Released under the **ISC License** © Yeldos Turapbayev. You're free to use, modify and distribute it. See the [LICENSE](https://github.com/ekosha-dev/react-native-animated-header-scroll-view/blob/main/LICENSE) file for the full text.
