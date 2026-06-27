@@ -1,9 +1,12 @@
 {
-  "name": "@ekosh02/react-native-animated-header-scroll-view",
-  "description": "Lightweight React Native ScrollView with animated header. No reanimated or gesture-handler required.",
+  "name": "@ekosha-dev/react-native-animated-header-scroll-view",
+  "description": "Lightweight React Native ScrollView with a native-driven animated header. No reanimated, gesture-handler or safe-area-context required.",
   "version": "1.2.3",
   "main": "src/index.ts",
+  "types": "src/index.ts",
+  "react-native": "src/index.ts",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "prettier": "npx prettier . --write"
   },
   "keywords": [
@@ -23,7 +26,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ekosh02/react-native-animated-header-scroll-view"
+    "url": "https://github.com/ekosha-dev/react-native-animated-header-scroll-view"
   },
   "publishConfig": {
     "access": "public"
@@ -33,12 +36,10 @@
     "@types/react": "^19.1.0",
     "@types/react-native": "^0.72.8",
     "prettier": "3.5.3",
-    "react-native-safe-area-context": "5.0.0",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-native": ">=0.70.0",
-    "react-native-safe-area-context": ">=5.0.0"
+    "react-native": ">=0.70.0"
   }
 }
